@@ -4,13 +4,15 @@ const cors = require('cors')
 const app = express();
 
 const port = process.env.PORT || 4004;
-const { seed, login, register } = require('./controller');
+const { seed, login, register, saveGame, loadGame } = require('./controller');
 
 app.use(express.json());
 app.use(cors());
 
-app.post(`/login`, login);
-app.post(`/register`, register);
+app.post('/login', login);
+app.post('/register', register);
+// app.post('/save', saveGame);
+// app.get('/load/:id', loadGame);
 
 app.post('/seed', seed);
 

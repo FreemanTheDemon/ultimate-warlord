@@ -12,6 +12,18 @@ const sequelize = new Sequelize(CONNECTION_STRING, {
 });
 
 module.exports = {
+    saveGame: (req, res) => {
+        // there will be a lot of data in the req.body of this function
+        // insert into the game state sub tables
+        // if there is already a game with the same name, update instead of insert
+    },
+
+    loadGame: (req, res) => {
+        // select query for the id of the game_state associated with the username
+        // chain? the query and make sure to get all the data with the same game state id foreign key
+        // send a response back as a clean organized object
+    },
+
     login: (req, res) => {
         const { username, password } = req.body;
 
