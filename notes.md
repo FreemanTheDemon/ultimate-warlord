@@ -1,7 +1,5 @@
 ok, here's the plan:
 
-- put database on heroku
-- seed database with postman
 - implement password stuff (use prior assignment for reference)
 - set up and add some mild design for the main page of the website
 - 
@@ -45,7 +43,16 @@ ok, here's the plan:
             - has the unit been clicked?
                 - display little box around unit so the player knows it is selected
                 - (cannot select units in other tiles at the same time)
-    - If a unit is selected and another tile is clicked
+    - If an unit is selected and another tile is clicked
         - handle the movement of that unit
             - move towards the target tile (show the picture moving from tile to tile)
             - shortest distance
+    - If an enemy unit/castle is selected, attack
+        - show Battle.js
+
+- Batte.js
+    - takes in the values of the two opposing armies
+    - also takes into account the terrain of the defender
+    - displays a box of the battle, with the units involved on both sides
+    - delete units one at a time on a timer until one side wins
+    - remove the units on the map
