@@ -18,6 +18,11 @@
     z-index: 2;
 }
 
+.unit-num {
+  position: relative;
+  z-index: 2;
+}
+
 .unit-container {
     position: absolute;
     width: 48px;
