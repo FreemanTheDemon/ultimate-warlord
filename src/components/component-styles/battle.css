@@ -1,0 +1,15 @@
+.battle-container {
+    z-index: 4;
+    position: absolute;
+    background-color: grey;
+    top: 100px;
+    left: 48px;
+    width: 500px;
+    height: 250px;
+}
+
+.fight-box {
+    text-align: center;
+    padding-top: 15px;
+    padding-bottom: 100px;
+}
