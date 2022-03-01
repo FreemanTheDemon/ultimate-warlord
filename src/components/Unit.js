@@ -3,7 +3,11 @@ import './component-styles/tile.css';
 
 function Unit({unit, x, y, attackUnit, setSelectedUnit, turn, isSelected}) {
     // {units: [{id: 21, moving: false}, {id: 2, moving: true}, {id: 2, moving: false}, {id: 4, moving: true}], team: 2, x: 2, y: 2}
-    const colors = ['red', 'yellow', 'blue'];
+    if (unit.units.length === 0) {
+        console.log('no units here')
+        return null;
+    }
+    const colors = ['white', 'black', 'blue'];
     let unitColor = colors[unit.team];
     let unitId = unit.units[0].id;
     let unitNum = unit.units.length;

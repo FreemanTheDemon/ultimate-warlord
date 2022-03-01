@@ -34,14 +34,12 @@ module.exports = {
         `).then(dbRes => {
             if (dbRes[0].length > 0) {
                 // username exists
-                console.log(dbRes[0][0].username, username);
                 sequelize.query(`
                 SELECT *
                     FROM users
                     WHERE username = '${username}';
                 `).then(dbRes => {
                     if (bcrypt.compareSync(password, dbRes[0][0].password)) {
-                        console.log(dbRes[0]);
                         res.status(200).send(dbRes[0]);
                     } else {
                         res.status(400).send("Incorrect password.");
@@ -81,66 +79,48 @@ module.exports = {
 
     seed: (req, res) => {
         sequelize.query(`
-        DROP TABLE IF EXISTS items;
         DROP TABLE IF EXISTS production;
         DROP TABLE IF EXISTS unit_data;
         DROP TABLE IF EXISTS factions;
-        DROP TABLE IF EXISTS game_state;
         DROP TABLE IF EXISTS users;
 
         CREATE TABLE users (
             id SERIAL PRIMARY KEY,
             username VARCHAR,
-            password VARCHAR
-        );
-          
-        CREATE TABLE game_state (
-            id SERIAL PRIMARY KEY,
-            user_id INTEGER,
-            name VARCHAR(10),
-            turn INTEGER,
-            FOREIGN KEY (user_id) REFERENCES users(id)
+            password VARCHAR,
+            turn INTEGER
         );
           
         CREATE TABLE factions (
             id SERIAL PRIMARY KEY,
-            game_state_id INTEGER,
+            user_id INTEGER,
             name VARCHAR(15),
             gold INTEGER,
             is_turn BOOLEAN DEFAULT false,
-            is_human BOOLEAN,
-            FOREIGN KEY (game_state_id) REFERENCES game_state(id)
+            FOREIGN KEY (user_id) REFERENCES users(id)
         );
           
         CREATE TABLE unit_data (
             id SERIAL PRIMARY KEY,
-            game_state_id INTEGER,
+            user_id_unit_data INTEGER,
             row INTEGER,
             col INTEGER,
             type INTEGER,
-            name VARCHAR(15),
             movement INTEGER,
             alignment INTEGER,
             is_defending BOOLEAN,
-            FOREIGN KEY (game_state_id) REFERENCES game_state(id),
+            FOREIGN KEY (user_id_unit_data) REFERENCES users(id),
             FOREIGN KEY (alignment) REFERENCES factions(id)
         );
 
         CREATE TABLE production (
             id SERIAL PRIMARY KEY,
-            game_state_id INTEGER,
+            user_id_production INTEGER,
             faction_id INTEGER,
             type INTEGER,
             turns_left INTEGER,
-            FOREIGN KEY (game_state_id) REFERENCES game_state(id),
+            FOREIGN KEY (user_id_production) REFERENCES users(id),
             FOREIGN KEY (faction_id) REFERENCES factions(id)
-        );
-          
-        CREATE TABLE items (
-            id SERIAL PRIMARY KEY,
-            unit_data_id INTEGER,
-            item_name VARCHAR(15),
-            FOREIGN KEY (unit_data_id) REFERENCES unit_data(id)
         );
 
         INSERT INTO users (username, password)

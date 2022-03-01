@@ -1,0 +1,19 @@
+.login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 852px;
+}
+
+.sub-login {
+    display: flex;
+    flex-direction: column;
+    padding-right: 150px;
+    padding-left: 150px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 function UnitDetails({unit}) {
     let unitId = unit.id;
@@ -8,7 +8,6 @@ function UnitDetails({unit}) {
     return (
         <>
             <img src={`units/${unitId}.gif`} alt='' />
-            {/* <input type="checkbox" checked={checked} onChange={()=>{setSelectedUnit(fullUnitCopy); setChecked(!checked);}} /> */}
         </>
     );
 }

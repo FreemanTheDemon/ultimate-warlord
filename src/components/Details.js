@@ -15,7 +15,7 @@ function Details({selectedUnit, setSelectedUnit}) {
         return (
             <div>
                 <p>
-                    Team Number: {team + 1}
+                    Player {team + 1}
                 </p>
                 {units.map((item, i) => {
                     return (

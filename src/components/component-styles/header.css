@@ -1,0 +1,17 @@
+@font-face {
+    font-family: 'Warlords';
+    src: local('Warlords'), url(./fonts/Warlords.otf) format('opentype');
+  }
+
+.header {
+    font-family: 'Warlords';
+    display: flex;
+    top: 0;
+    justify-content: center;
+    align-items: center;
+    height: 47px;
+    letter-spacing: 10px;
+    font-size: 22px;
+    background-color: #949494;
+    border-bottom: 3px solid black;
+}
