@@ -1,22 +1,22 @@
 import React from 'react';
 import UnitDetails from './UnitDetails';
 
-function Details({selectedUnit, setSelectedUnit}) {
+function Details({selectedUnit, turn}) {
     if (selectedUnit.id === null) {
         return (
             <div>
                 <p>
-                    nothing selected
+                    Player {turn + 1}'s turn
                 </p>
             </div>
         )
     } else {
-        const {units, team} = selectedUnit;
+        if (selectedUnit.id === null) {
+            return null;
+        }
+        const { units } = selectedUnit;
         return (
             <div>
-                <p>
-                    Player {team + 1}
-                </p>
                 {units.map((item, i) => {
                     return (
                         <UnitDetails unit={item} />

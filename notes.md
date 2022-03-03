@@ -1,12 +1,9 @@
 ok, here's the plan:
 
-- manage unit splitting correctly - redux?
-- implement turn system
-- implement attack
-- limit movement
-- 
-- implement password stuff (use prior assignment for reference)
-- set up and add some mild design for the main page of the website
+- unit production from castle
+- split units (single/double click)
+- save/load game
+- allow one team to win the game
 
 - App.js
     - This is the king, the hub of the whole app

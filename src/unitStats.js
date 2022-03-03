@@ -15,7 +15,7 @@ module.exports = {
         {id: 12, time: 2, cost: 4, strength: 5, movement: 8, name: 'Heavy Infantry'},
         {id: 13, time: 1, cost: 4, strength: 3, movement: 10, name: 'Light Infantry'},
         {id: 14, time: 1, cost: 4, strength: 4, movement: 12, name: 'Elven Archers'},
-        {id: 20, time: 5, cost: 20, strength: 5, movement: 16, name: 'Hero'}
+        {id: 15, time: 5, cost: 20, strength: 5, movement: 16, name: 'Hero'}
     ]
 };
 

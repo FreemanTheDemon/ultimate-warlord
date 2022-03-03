@@ -1,6 +1,6 @@
 .details-container {
     position: absolute;
-    top: 750px;
+    top: 768px;
     width: 400px;
     background-color: #747474;
 }
@@ -10,4 +10,15 @@
     padding-left: 70px;
     padding-right: 70px;
     top: 50px;
+}
+
+.button-main:hover {
+    cursor: pointer;
+}
+
+.next-turn {
+    position: absolute;
+    top: 768px;
+    left: 400px;
+    width: 100px;
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import './component-styles/tile.css';
 
-function Unit({unit, x, y, attackUnit, setSelectedUnit, turn, isSelected}) {
+function Unit({unit, x, y, attackUnit, setSelectedUnit, turn, isSelected, selectedUnit, mergeUnits}) {
     // {units: [{id: 21, moving: false}, {id: 2, moving: true}, {id: 2, moving: false}, {id: 4, moving: true}], team: 2, x: 2, y: 2}
     if (unit.units.length === 0) {
         console.log('no units here')
@@ -23,14 +23,27 @@ function Unit({unit, x, y, attackUnit, setSelectedUnit, turn, isSelected}) {
         return (
             <div className="border-animation unit-container" style={{top: `calc(${x} * 48px)`, left: `calc(${y} * 48px)`}}>
                 <p className="unit-num" style={{color: unitColor}}>{unitNum}</p>
-                <img onClick={()=>{if (turn === unit.team) {setSelectedUnit(unit)} else {attackUnit(x, y)}}} className="unit" src={`units/${unitId}.gif`} alt='' />
+                <img onClick={()=>{
+                    if (turn === unit.team) {
+                        setSelectedUnit(unit);
+                    } else {
+                        attackUnit(x, y);
+                    }
+                    }} className="unit" src={`units/${unitId}.gif`} alt='' />
             </div>
         );
     } else {
         return (
             <div className="unit-container" style={{top: `calc(${x} * 48px)`, left: `calc(${y} * 48px)`}}>
                 <p className="unit-num" style={{color: unitColor}}>{unitNum}</p>
-                <img onClick={()=>{if (turn === unit.team) {setSelectedUnit(unit)} else {attackUnit(x, y)}}} className="unit" src={`units/${unitId}.gif`} alt='' />
+                <img onClick={()=>{
+                    if (turn === unit.team && (selectedUnit.x - x <= 1 && selectedUnit.x - x >= -1) && (selectedUnit.y - y <= 1 && selectedUnit.y - y >= -1)) {
+                        mergeUnits(x, y);
+                    } else if (turn === unit.team) {
+                        setSelectedUnit(unit);
+                    } else if (selectedUnit.id !== null) {
+                        attackUnit(x, y);
+                    }}} className="unit" src={`units/${unitId}.gif`} alt='' />
             </div>
         );
     }

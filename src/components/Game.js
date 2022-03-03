@@ -4,37 +4,35 @@ import Tile from './Tile';
 import Unit from './Unit';
 import Battle from './Battle';
 import Details from './Details';
-import { unitStats } from '../unit-stats';
-
-let turn = 0;
+import { unitStats } from '../unitStats';
 
 const grid = [
-    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs'],
-    ['d_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b'],
-    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs'],
-    ['d_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b'],
-    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs'],
-    ['d_b', 'd_bs', 'd_b', 'cw_nw_d', 'cw_ne_d', 'd_bs', 'dm_g_e', 'dm_g', 'dm_g', 'dm_g', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b'],
-    ['d_bs', 'd_b', 'd_bs', 'cw_sw_d', 'cw_se_d', 'd_t_g', 'dm_g_e', 'dm_g', 'dm_g', 'dm_g', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs'],
-    ['d_b', 'd_bs', 'd_b', 'd_bs', 'd_t_g', 'dm_g_se', 'dm_g_se_b', 'dm_g', 'dm_g', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b'],
-    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dm_g_e', 'dm_g', 'dm_g', 'dm_g', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'cb_nw_d', 'cb_ne_d', 'd_bs', 'd_b', 'd_bs'],
-    ['d_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dm_g_ne', 'dm_g_ne_b', 'dm_g', 'dm_g', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'cb_sw_d', 'cb_se_d', 'd_b', 'd_bs', 'd_b'],
-    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dm_g_ne', 'dm_g_n', 'dm_g_n', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs'],
-    ['d_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b'],
-    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs'],
-    ['d_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b'],
-    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs'],
-    ['d_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b'],
+    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dm_g_e', 'dm_g', 'dm_g', 'dm_g', 'dm_g', 'dm_g', 'dm_g_w', 'd_bs', 'd_b', 'd_bs'],
+    ['d_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dm_g_e', 'dm_g', 'dm_g', 'dm_g', 'dm_g', 'dm_g_nw_b', 'dm_g_nw', 'd_b', 'd_bs', 'd_b'],
+    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dm_g_se', 'dm_g_se_b', 'dm_g', 'dm_g', 'dm_g_nw_b', 'dm_g_n', 'dm_g_nw', 'd_b', 'd_bs', 'd_b', 'd_bs'],
+    ['d_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dr_se', 'dr_h', 'dr_h', 'dr_h', 'dr_h', 'dr_h', 'dr_h', 'dr_h', 'dr_sw', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dm_g_e', 'dm_g', 'dm_g', 'dm_g', 'dm_g_w', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b'],
+    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dr_v', 'dm_g_se', 'dm_g_s', 'dm_g_s', 'dm_g_s', 'dm_g_sw', 'd_b', 'd_bs', 'dr_ne', 'dr_sw', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dm_g_e', 'dm_g', 'dm_g', 'dm_g_nw_b', 'dm_g_nw', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs'],
+    ['d_b', 'd_bs', 'd_b', 'cw_nw_d', 'cw_ne_d', 'dr_nw', 'dm_g_e', 'dm_g', 'dm_g', 'dm_g', 'dm_g_w', 'd_bs', 'd_b', 'd_bs', 'dr_ne', 'dr_h', 'dr_h', 'dr_sw', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dt_b', 'd_b', 'd_bs', 'dm_g_e', 'dm_g', 'dm_g', 'dm_g_w', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b'],
+    ['d_bs', 'd_b', 'd_bs', 'cw_sw_d', 'cw_se_d', 'dt_g', 'dm_g_e', 'dm_g', 'dm_g', 'dm_g', 'dm_g_w', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dr_se', 'dr_t_n', 'dr_h', 'dr_h', 'dr_sw', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dm_g_ne', 'dm_g_n', 'dm_g_n', 'dm_g_nw', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs'],
+    ['d_b', 'd_bs', 'd_b', 'd_bs', 'dt_g', 'dm_g_se', 'dm_g_se_b', 'dm_g', 'dm_g', 'dm_g_nw_b', 'dm_g_nw', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dr_v', 'dm_g_se', 'dm_g_s', 'dm_g_sw', 'dr_v', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dt_b_se_2', 'dt_b_s_4', 'dt_b_s_2', 'dt_b_sw_1', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b'],
+    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dm_g_e', 'dm_g', 'dm_g', 'dm_g_nw_b', 'dm_g_nw', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dr_v', 'dm_g_e', 'dm_g_mid', 'dm_g_w', 'dr_v', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dt_b_e_2', 'dt_b_full', 'dt_b_full', 'dt_b_w_1', 'd_bs', 'd_b', 'cb_nw_d', 'cb_ne_d', 'd_bs', 'd_b', 'd_bs'],
+    ['d_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dm_g_ne', 'dm_g_ne_b', 'dm_g', 'dm_g_w', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dr_v', 'dm_g_ne', 'dm_g_n', 'dm_g_nw', 'dr_v', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dt_b_ne_2', 'dt_b_full', 'dt_b_full', 'dt_b_w_2', 'd_b', 'd_bs', 'cb_sw_d', 'cb_se_d', 'd_b', 'd_bs', 'd_b'],
+    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dm_g_ne', 'dm_g_n', 'dm_g_nw', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dr_ne', 'dr_h', 'dr_h', 'dr_t_s', 'dr_nw', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dt_b_ne_1', 'dt_b_n_4', 'dt_b_nw_2', 'd_bs', 'd_b', 'dr_v', 'd_b', 'd_bs', 'd_b', 'd_bs'],
+    ['d_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dr_ne', 'dr_h', 'dr_sw', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dt_b', 'd_bs', 'd_b', 'dr_se', 'dr_nw', 'd_bs', 'd_b', 'd_bs', 'd_b'],
+    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dr_ne', 'dr_h', 'dr_h', 'dr_sw', 'd_b', 'd_bs', 'd_b', 'dr_se', 'dr_h', 'dr_h', 'dr_nw', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs'],
+    ['d_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dr_ne', 'dr_h', 'dr_h', 'dr_h', 'dr_nw', 'd_bs', 'dm_g_se', 'dm_g_s', 'dm_g_s', 'dm_g_s', 'dm_g_s', 'dm_g_s', 'dm_g_s'],
+    ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dm_g_se', 'dm_g_se_b', 'dm_g', 'gm_g', 'gm_g_nw_b', 'gm_g_n', 'gm_g_n', 'gm_g_n'],
+    ['d_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'dm_g_e', 'dm_g', 'dm_g', 'dm_g', 'gm_g_w', 'g_1', 'g_2', 'g_1'],
 ];
-// 37 x 17
+// 37 x 16
 
 let units = [
-    ['', '', '', '', '', {units: [{id: 3, moving: true, movement: 5, unique: 1}, {id: 4, moving: true, movement: 5, unique: 2}, {id: 4, moving: true, movement: 5, unique: 3}, {id: 5, moving: true, movement: 5, unique: 4},], team: 'd_bs', x: 0, y: 5}, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', {units: [{id: 3, movement: 5, unique: 1}, {id: 4, movement: 5, unique: 2}, {id: 4, movement: 5, unique: 3}, {id: 5, movement: 5, unique: 4},], team: 0, x: 0, y: 5}, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', {units: [{id: 2, moving: true, movement: 5, unique: 5}], team: 0, x: 3, y: 4}, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', {units: [{id: 2, movement: 5, unique: 5}], team: 0, x: 3, y: 4}, {units: [{id: 2, movement: 5, unique: 7}], team: 0, x: 3, y: 5}, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', {units: [{id: 24, moving: true, movement: 5, unique: 6}], team: 1, x: 5, y: 8}, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', {units: [{id: 15, movement: 5, unique: 6}], team: 1, x: 5, y: 8}, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
@@ -48,9 +46,6 @@ let units = [
 ];
 
 // up to 8 units
-// let unitsTable = [{bag: ['item1', 'item2'], id: 20}, {bag: ['item3', 'item4'], id: 21}];
-
-// let bags = [[]];
 
 function Game() {
     const didMount = useRef(false);
@@ -59,6 +54,7 @@ function Game() {
     const [battle, setBattle] = useState(false);
     const [defenderWins, setDefenderWins] = useState(null);
     const [deathOrder, setDeathOrder] = useState([]);
+    const [turn, setTurn] = useState(0)
     
     useEffect(() => {
         const listener = event => {
@@ -73,12 +69,47 @@ function Game() {
         };
     }, []);
 
+    function nextTurn() {
+        // do production calculations for the players turn
+        // either decrease the turn by one or add the unit onto the board
+        setSelectedUnit({id: null});
+        if (turn === 1) {
+            // do actions for the beginning of player 1's turn
+            setTurn(turn - 1);
+        } else {
+            // do actions for player 2's turn
+            setTurn(turn + 1);
+        }
+        for (let i = 0; i < units.length; i++) {
+            for (let j = 0; j < units[i].length; j++) {
+                if (units[i][j] !== '') {
+                    console.log(units[i][j].units)
+                    for (let k = 0; k < units[i][j].units.length; k++) {
+                        let baseMovement = unitStats[units[i][j].units[k].id].movement
+                        units[i][j].units[k].movement = baseMovement;
+                    }
+                }
+            }
+        }
+    }
+
     function deselectUnit() {
         setSelectedUnit({id: null});
     }
 
     function moveUnit(x, y) {
         if (selectedUnit.id !== null) {
+            let canMove = true;
+            let moveCost = 1; // set this to equal the move cost at the tile coords
+            for (let i = 0; i < selectedUnit.units.length; i++) {
+                if (selectedUnit.units[i].movement < moveCost) {
+                    canMove = false;
+                }
+            }
+
+            if (!canMove) {
+                return;
+            }
             // compare current coordinates to target coordinates
             //  m=(y2-y1)/(x2-x1)
             let slopeX = (y - selectedUnit.y);
@@ -108,16 +139,10 @@ function Game() {
             let staying = [];
             // sort out which units are moving and which are staying
             for (let i = 0; i < unit.units.length; i++) {
-                if (unit.units[i].moving === true) {
-                    moving.push(unit.units[i]);
-                } else {
-                    staying.push(unit.units[i]);
-                }
+                unit.units[i].movement -= moveCost;
+                moving.push(unit.units[i]);
             }
-            // break the function of no unit is moving
-            if (moving.length === 0) {
-                return;
-            }
+
             // reassign the units that are moving
             unit.units = moving;
 
@@ -139,7 +164,28 @@ function Game() {
         }
     }
 
+    function mergeUnits(x, y) {
+        // if we can merge the units,
+        // determine if the unit was single clicked or double clicked
+        // if total units after merge is less than or equal to 8
+        // check movement limitations
+        // then either move one unit or all units together
+        // finally, select the new unit
+        let unitClone = {...units[x][y]}
+        let newUnits = unitClone.units.slice().concat(selectedUnit.units.slice());
+        unitClone.units = newUnits;
+        units[selectedUnit.x][selectedUnit.y] = '';
+        units[x][y] = unitClone;
+        setSelectedUnit(units[x][y]);
+    }
+
+    function movementCalc(unit, x, y) {
+        // this function will do all the movement calculations aside from attacking which is always a default of two movement
+        return unit;
+    }
+
     function attackUnit(x, y) {
+        // only attack if movement of all selected units is at least two
         let slopeX = (y - selectedUnit.y);
         let slopeY = (x - selectedUnit.x);
         if (slopeX > 1 || slopeX < -1 || slopeY > 1 || slopeY < -1 ) {
@@ -170,8 +216,8 @@ function Game() {
             let posCounter = 0;
             for (let j = defenderArr.length - (1 + defPos); j >= 0; j--) {
                 let currentDefStr;
-                if (defenderArr[i].id < 20) {
-                    currentDefStr = unitStats[defenderArr[i].id].strength;
+                if (defenderArr[j].id < 20) {
+                    currentDefStr = unitStats[defenderArr[j].id].strength;
                 } else {
                     currentDefStr = unitStats[15].strength;
                 }
@@ -234,7 +280,7 @@ function Game() {
                     units[defender.x][defender.y] = '';
                     moveUnit(defender.x, defender.y);
                     setSelectedUnit(units[defender.x][defender.y]);
-                    setDefender({id: null})
+                    setDefender({id: null});
                 }
             }
         } else {
@@ -262,7 +308,7 @@ function Game() {
                             }
                             if (innerItem !== '') {
                                 return (
-                                    <Unit unit={innerItem} x={x} y={y} attackUnit={attackUnit} setSelectedUnit={setSelectedUnit} turn={turn} isSelected={isSelected} selectedUnit={selectedUnit} />
+                                    <Unit unit={innerItem} x={x} y={y} attackUnit={attackUnit} setSelectedUnit={setSelectedUnit} turn={turn} isSelected={isSelected} selectedUnit={selectedUnit} mergeUnits={mergeUnits} />
                                 );
                             } else {
                                 return undefined;
@@ -271,7 +317,10 @@ function Game() {
                     })}
                 </div>
                 <div className="details-container">
-                    <Details selectedUnit={selectedUnit} setSelectedUnit={setSelectedUnit}/>
+                    <Details selectedUnit={selectedUnit} setSelectedUnit={setSelectedUnit} turn={turn} />
+                </div>
+                <div>
+                    <button className="button next-turn" onClick={()=>{nextTurn()}}>Next Turn</button>
                 </div>
             </div>
         </div>

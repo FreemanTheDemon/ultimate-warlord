@@ -6,7 +6,7 @@ import Footer from './components/Footer';
 import Login from './components/Login';
 
 function App() {
-  const [login, setLogin] = useState(true);
+  const [login, setLogin] = useState(false);
 
   let audio = new Audio("/audio/fanfare.mp3");
 
