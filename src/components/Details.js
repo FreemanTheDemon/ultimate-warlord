@@ -19,7 +19,7 @@ function Details({selectedUnit, turn}) {
             <div>
                 {units.map((item, i) => {
                     return (
-                        <UnitDetails unit={item} />
+                        <UnitDetails unit={item} key={i} />
                     );
                 })}
             </div>

@@ -14,4 +14,10 @@
     font-size: 22px;
     background-color: #949494;
     border-bottom: 3px solid black;
+    background: -webkit-linear-gradient(#9C1010, #DEBD52);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke-color: white;
+    -webkit-text-stroke-width: 1px; 
 }

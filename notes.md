@@ -1,9 +1,9 @@
 ok, here's the plan:
 
 - unit production from castle
-- split units (single/double click)
 - save/load game
 - allow one team to win the game
+- cycle units
 
 - App.js
     - This is the king, the hub of the whole app

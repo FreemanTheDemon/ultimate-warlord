@@ -4,6 +4,7 @@ import Tile from './Tile';
 import Unit from './Unit';
 import Battle from './Battle';
 import Details from './Details';
+import Production from './Production';
 import { unitStats } from '../unitStats';
 
 const grid = [
@@ -55,7 +56,10 @@ function Game() {
     const [defenderWins, setDefenderWins] = useState(null);
     const [deathOrder, setDeathOrder] = useState([]);
     const [turn, setTurn] = useState(0)
-    
+    const [dbl, setDbl] = useState(false);
+    const [production, setProduction] = useState(true);
+    const [producing, setProducing] = useState({id: null});
+
     useEffect(() => {
         const listener = event => {
             if (event.code === "KeyD") {
@@ -83,7 +87,6 @@ function Game() {
         for (let i = 0; i < units.length; i++) {
             for (let j = 0; j < units[i].length; j++) {
                 if (units[i][j] !== '') {
-                    console.log(units[i][j].units)
                     for (let k = 0; k < units[i][j].units.length; k++) {
                         let baseMovement = unitStats[units[i][j].units[k].id].movement
                         units[i][j].units[k].movement = baseMovement;
@@ -97,13 +100,32 @@ function Game() {
         setSelectedUnit({id: null});
     }
 
+    function selectUnit(e) {
+        switch (e.detail) {
+            case 1:
+                setDbl(false);
+            break;
+            case 2:
+                setDbl(true);
+            break;
+        }
+    }
+
     function moveUnit(x, y) {
         if (selectedUnit.id !== null) {
             let canMove = true;
             let moveCost = 1; // set this to equal the move cost at the tile coords
             for (let i = 0; i < selectedUnit.units.length; i++) {
-                if (selectedUnit.units[i].movement < moveCost) {
-                    canMove = false;
+                if (dbl) {
+                    if (selectedUnit.units[i].movement < moveCost) {
+                        canMove = false;
+                    }
+                } else {
+                    if (i === 0) {
+                        if (selectedUnit.units[i].movement < moveCost) {
+                            canMove = false;
+                        }
+                    }
                 }
             }
 
@@ -139,8 +161,17 @@ function Game() {
             let staying = [];
             // sort out which units are moving and which are staying
             for (let i = 0; i < unit.units.length; i++) {
-                unit.units[i].movement -= moveCost;
-                moving.push(unit.units[i]);
+                if (dbl) {
+                    unit.units[i].movement -= moveCost;
+                    moving.push(unit.units[i]);
+                } else {
+                    if (i === 0) {
+                        unit.units[i].movement -= moveCost;
+                        moving.push(unit.units[i]);
+                    } else {
+                        staying.push(unit.units[i]);
+                    }
+                }
             }
 
             // reassign the units that are moving
@@ -171,17 +202,36 @@ function Game() {
         // check movement limitations
         // then either move one unit or all units together
         // finally, select the new unit
+        if ((selectedUnit.units.length + units[x][y].units.length) > 8) {
+            return;
+        }
+        let canMove = true;
+        let moveCost = 1; // set this to equal the move cost at the tile coords
+        for (let i = 0; i < selectedUnit.units.length; i++) {
+            if (selectedUnit.units[i].movement < moveCost) {
+                canMove = false;
+            }
+        }
+
+        if (!canMove) {
+            return;
+        }
+
+        let unit = Object.assign({}, units[selectedUnit.x][selectedUnit.y]);
+        let moving = [];
+        for (let i = 0; i < unit.units.length; i++) {
+            unit.units[i].movement -= moveCost;
+            moving.push(unit.units[i]);
+        }
+
+        unit.units = moving;
+
         let unitClone = {...units[x][y]}
-        let newUnits = unitClone.units.slice().concat(selectedUnit.units.slice());
+        let newUnits = unitClone.units.slice().concat(unit.units.slice());
         unitClone.units = newUnits;
         units[selectedUnit.x][selectedUnit.y] = '';
         units[x][y] = unitClone;
         setSelectedUnit(units[x][y]);
-    }
-
-    function movementCalc(unit, x, y) {
-        // this function will do all the movement calculations aside from attacking which is always a default of two movement
-        return unit;
     }
 
     function attackUnit(x, y) {
@@ -291,6 +341,7 @@ function Game() {
     return (
         <div className="game">
             <div className="map-container">
+                {production && <Production setProduction={setProduction} setProducing={setProducing} producing={producing}/>}
                 {battle && <Battle attacker={selectedUnit} defender={defender} setBattle={setBattle} deathOrder={deathOrder} />}
                 <div className="tile-container">
                     {grid.map((item, x) => {
@@ -308,7 +359,7 @@ function Game() {
                             }
                             if (innerItem !== '') {
                                 return (
-                                    <Unit unit={innerItem} x={x} y={y} attackUnit={attackUnit} setSelectedUnit={setSelectedUnit} turn={turn} isSelected={isSelected} selectedUnit={selectedUnit} mergeUnits={mergeUnits} />
+                                    <Unit unit={innerItem} x={x} y={y} attackUnit={attackUnit} setSelectedUnit={setSelectedUnit} turn={turn} isSelected={isSelected} selectedUnit={selectedUnit} mergeUnits={mergeUnits} selectUnit={selectUnit} />
                                 );
                             } else {
                                 return undefined;
