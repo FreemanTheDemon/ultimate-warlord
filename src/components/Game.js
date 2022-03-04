@@ -5,7 +5,11 @@ import Unit from './Unit';
 import Battle from './Battle';
 import Details from './Details';
 import Production from './Production';
+import Winner from './Winner';
 import { unitStats } from '../unitStats';
+import axios from 'axios';
+
+const baseURL = 'http://localhost:4004'
 
 const grid = [
     ['d_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'd_b', 'd_bs', 'dm_g_e', 'dm_g', 'dm_g', 'dm_g', 'dm_g', 'dm_g', 'dm_g_w', 'd_bs', 'd_b', 'd_bs'],
@@ -28,12 +32,12 @@ const grid = [
 // 37 x 16
 
 let units = [
-    ['', '', '', '', '', {units: [{id: 3, movement: 5, unique: 1}, {id: 4, movement: 5, unique: 2}, {id: 4, movement: 5, unique: 3}, {id: 5, movement: 5, unique: 4},], team: 0, x: 0, y: 5}, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', {units: [{id: 2, movement: 5, unique: 5}], team: 0, x: 3, y: 4}, {units: [{id: 2, movement: 5, unique: 7}], team: 0, x: 3, y: 5}, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
-    ['', '', '', '', '', '', '', '', {units: [{id: 15, movement: 5, unique: 6}], team: 1, x: 5, y: 8}, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
+    ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
     ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''],
@@ -48,17 +52,109 @@ let units = [
 
 // up to 8 units
 
-function Game() {
+function Game({username, setLogin}) {
     const didMount = useRef(false);
     const [selectedUnit, setSelectedUnit] = useState({id: null}); // {units: [{id: NUM, moving: BOOL}], team: NUM, x: NUM, y: NUM}
     const [defender, setDefender] = useState({id: null});
     const [battle, setBattle] = useState(false);
     const [defenderWins, setDefenderWins] = useState(null);
     const [deathOrder, setDeathOrder] = useState([]);
-    const [turn, setTurn] = useState(0)
+    const [turn, setTurn] = useState(null)
     const [dbl, setDbl] = useState(false);
-    const [production, setProduction] = useState(true);
-    const [producing, setProducing] = useState({id: null});
+    const [production, setProduction] = useState(false);
+    const [producingW, setProducingW] = useState({id: 15, time: 0});
+    const [producingB, setProducingB] = useState({id: 15, time: 0});
+    const [uniqueId, setUniqueId] = useState(0);
+    const [gameOver, setGameOver] = useState(false);
+    const [winner, setWinner] = useState('');
+    // x4y5
+    // x9y32
+
+    function saveGame() {
+        let unitsArr = [];
+        for (let i = 0; i < units.length; i++) {
+            for (let j = 0; j < units[i].length; j++) {
+                let currentUnit = units[i][j];
+                if (currentUnit !== '') {
+                    if (currentUnit.units.length === 1) {
+                        unitsArr.push(currentUnit);
+                    } else {
+                        for (let k = 0; k < currentUnit.units.length; k++) {
+                            let unitCopy = {...currentUnit};
+                            unitCopy.units = [currentUnit.units[k]];
+                            unitsArr.push(unitCopy);
+                        }
+                    }
+                }
+            }
+        }
+
+        let teamOneProd = {...producingW};
+        let teamTwoProd = {...producingB};
+        teamOneProd.team = 0;
+        teamTwoProd.team = 1;
+
+        let productionArr = [teamOneProd, teamTwoProd];
+        let data = {
+            username: username,
+            turn: turn,
+            units: unitsArr,
+            production: productionArr
+        };
+        axios.post(`${baseURL}/save`, data)
+        .then(res => {
+            setLogin(true);
+        })
+        .catch(err => console.log(err))
+    }
+
+    function loadGame() {
+        axios.post(`${baseURL}/load`, {username: username})
+        .then(res => {
+            console.log(res);
+            let factions = res.data.factions;
+            for (let i = 0; i < factions.length; i++) {
+                if (factions[i].is_turn) {
+                    setTurn(factions[i].team);
+                }
+            }
+
+            let productionRes = res.data.production;
+            for (let j = 0; j < productionRes.length; j++) {
+                let prodObj = {id: productionRes.type, time: productionRes.turns_left};
+                if (productionRes.faction_id === 0) {
+                    setProducingW(prodObj);
+                } else {
+                    setProducingB(prodObj);
+                }
+            }
+            // {units: [{id: 15, movement: 5, unique: 6}], team: 1, x: 5, y: 8}
+            let unitsRes = res.data.units;
+            for (let x = 0; x < units.length; x++) {
+                for (let y = 0; y < units[x].length; y++) {
+                    if (units[x][y] !== '') {
+                        units[x][y] = '';
+                    }
+                }
+            }
+
+            for (let k = 0; k < unitsRes.length; k++) {
+                if (unitsRes.unique_id > uniqueId) {
+                    setUniqueId(unitsRes.unique_id + 1);
+                }
+                if (units[unitsRes[k].row][unitsRes[k].col] !== '') {
+                    let newUnit = {...units[unitsRes[k].row][unitsRes[k].col]};
+                    let newUnits = newUnit.units.slice().concat([{id: unitsRes[k].type, movement: unitsRes[k].movement, unique: unitsRes[k].unique_id}]);
+                    newUnit.units = newUnits;
+                    units[unitsRes[k].row][unitsRes[k].col] = newUnit;
+                } else {
+                    units[unitsRes[k].row][unitsRes[k].col] = {units: [{id: unitsRes[k].type, movement: unitsRes[k].movement, unique: unitsRes[k].unique_id}], team: unitsRes[k].alignment, x: unitsRes[k].row, y: unitsRes[k].col}
+                }
+            }
+
+        })
+        .catch(err => console.log(err))
+    }
 
     useEffect(() => {
         const listener = event => {
@@ -74,15 +170,88 @@ function Game() {
     }, []);
 
     function nextTurn() {
+        if (turn === null) {
+            setTurn(1);
+            return;
+        }
         // do production calculations for the players turn
         // either decrease the turn by one or add the unit onto the board
         setSelectedUnit({id: null});
         if (turn === 1) {
             // do actions for the beginning of player 1's turn
+            // check if the player lost
+            // 53 54 63 64
+            if (typeof(units[5][3]) === 'object') {
+                if (units[5][3].team === 1) {
+                    setWinner('2');
+                    setGameOver(true);
+                }
+            }
+            if (typeof(units[5][4]) === 'object') {
+                if (units[5][4].team === 1) {
+                    setWinner('2');
+                    setGameOver(true);
+                }
+            }
+            if (typeof(units[6][3]) === 'object') {
+                if (units[6][3].team === 1) {
+                    setWinner('2');
+                    setGameOver(true);
+                }
+            }
+            if (typeof(units[6][4]) === 'object') {
+                if (units[6][4].team === 1) {
+                    setWinner('2');
+                    setGameOver(true);
+                }
+            }
             setTurn(turn - 1);
+            if (producingW.time <= 0) {
+                setProduction(true);
+                // refactor so that units will stack when they are produced
+                units[5][4] = {units: [{id: producingW.id, movement: unitStats[producingW.id].movement, unique: uniqueId}], team: 0, x: 5, y: 4}
+                setUniqueId(uniqueId + 1);
+            } else {
+                let copy = {...producingW}
+                copy.time--;
+                setProducingW(copy);
+            }
         } else {
             // do actions for player 2's turn
+            if (typeof(units[8][32]) === 'object') {
+                if (units[8][32].team === 0) {
+                    setWinner('1');
+                    setGameOver(true);
+                }
+            }
+            if (typeof(units[8][33]) === 'object') {
+                if (units[8][33].team === 0) {
+                    setWinner('1');
+                    setGameOver(true);
+                }
+            }
+            if (typeof(units[9][32]) === 'object') {
+                if (units[9][32].team === 0) {
+                    setWinner('1');
+                    setGameOver(true);
+                }
+            }
+            if (typeof(units[9][33]) === 'object') {
+                if (units[9][33].team === 0) {
+                    setWinner('1');
+                    setGameOver(true);
+                }
+            }
             setTurn(turn + 1);
+            if (producingB.time <= 0) {
+                setProduction(true);
+                units[9][32] = {units: [{id: producingB.id, movement: unitStats[producingB.id].movement, unique: uniqueId}], team: 1, x: 9, y: 32}
+                setUniqueId(uniqueId + 1);
+            } else {
+                let copy = {...producingB}
+                copy.time--;
+                setProducingB(copy);
+            }
         }
         for (let i = 0; i < units.length; i++) {
             for (let j = 0; j < units[i].length; j++) {
@@ -341,7 +510,8 @@ function Game() {
     return (
         <div className="game">
             <div className="map-container">
-                {production && <Production setProduction={setProduction} setProducing={setProducing} producing={producing}/>}
+                {gameOver && <Winner winner={winner}/>}
+                {production && <Production setProduction={setProduction} setProducingW={setProducingW} producingW={producingW} setProducingB={setProducingB} producingB={producingB} player={turn}/>}
                 {battle && <Battle attacker={selectedUnit} defender={defender} setBattle={setBattle} deathOrder={deathOrder} />}
                 <div className="tile-container">
                     {grid.map((item, x) => {
@@ -372,6 +542,12 @@ function Game() {
                 </div>
                 <div>
                     <button className="button next-turn" onClick={()=>{nextTurn()}}>Next Turn</button>
+                </div>
+                <div>
+                    <button className="button save" onClick={()=>{saveGame()}}>Save and Quit</button>
+                </div>
+                <div>
+                    <button className="button load" onClick={()=>{loadGame()}}>Load Saved Game</button>
                 </div>
             </div>
         </div>

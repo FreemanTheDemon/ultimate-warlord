@@ -6,7 +6,8 @@ import Footer from './components/Footer';
 import Login from './components/Login';
 
 function App() {
-  const [login, setLogin] = useState(false);
+  const [login, setLogin] = useState(true);
+  const [username, setUsername] = useState('');
 
   let audio = new Audio("/audio/fanfare.mp3");
 
@@ -19,8 +20,8 @@ function App() {
   return (
     <div className="app">
       <Header />
-      {login && <Login setLogin={setLogin} />}
-      {!login && <Game />}
+      {login && <Login setLogin={setLogin} setUsername={setUsername} />}
+      {!login && <Game username={username} setLogin={setLogin} />}
       <Footer />
     </div>
   );

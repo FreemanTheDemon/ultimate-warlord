@@ -1,7 +1,7 @@
 import React from 'react';
 import './component-styles/production.css';
 
-function UnitProduction({unit, setProducing, isSelected}) {
+function UnitProduction({unit, setProducingW, setProducingB, isSelected, player}) {
     const { id, time } = unit;
     if (isSelected) {
         return (
@@ -12,7 +12,7 @@ function UnitProduction({unit, setProducing, isSelected}) {
     } else {
         return (
             <div>
-                <img onClick={()=>{setProducing({id: id, time: time})}} className="unit" src={`units/${id}.gif`} alt='' />
+                <img onClick={()=>{if(player === 0) {setProducingW({id: id, time: time})} else {setProducingB({id: id, time: time})}}} className="unit" src={`units/${id}.gif`} alt='' />
             </div>
         );
     }

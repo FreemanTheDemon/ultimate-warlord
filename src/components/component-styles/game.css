@@ -12,13 +12,44 @@
     top: 50px;
 }
 
-.button-main:hover {
+button:hover {
     cursor: pointer;
+    border-top: 5px solid #555555;
+    border-left: 5px solid #555555;
+    border-bottom: 5px solid #969696;
+    border-right: 5px solid #969696;
 }
 
 .next-turn {
     position: absolute;
     top: 768px;
-    left: 400px;
+    left: 1476px;
+    height: 42px;
     width: 100px;
+    color: #9C1010;
+    font-weight: 600;
+}
+
+.save {
+    position: absolute;
+    top: 768px;
+    left: 1576px;
+    height: 42px;
+    width: 120px;
+}
+
+.load {
+    position: absolute;
+    top: 768px;
+    left: 1696px;
+    width: 150px;
+    height: 42px;
+}
+
+button {
+    background-color: silver;
+    border-top: 5px solid #969696;
+    border-left: 5px solid #969696;
+    border-bottom: 5px solid #555555;
+    border-right: 5px solid #555555;
 }

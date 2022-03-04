@@ -1,8 +1,5 @@
 ok, here's the plan:
 
-- unit production from castle
-- save/load game
-- allow one team to win the game
 - cycle units
 
 - App.js

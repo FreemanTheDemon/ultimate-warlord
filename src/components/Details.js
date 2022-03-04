@@ -1,5 +1,6 @@
 import React from 'react';
 import UnitDetails from './UnitDetails';
+import './component-styles/details.css'
 
 function Details({selectedUnit, turn}) {
     if (selectedUnit.id === null) {
@@ -16,7 +17,7 @@ function Details({selectedUnit, turn}) {
         }
         const { units } = selectedUnit;
         return (
-            <div>
+            <div className="units">
                 {units.map((item, i) => {
                     return (
                         <UnitDetails unit={item} key={i} />

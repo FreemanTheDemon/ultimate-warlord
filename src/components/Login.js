@@ -4,7 +4,7 @@ import './component-styles/login.css';
 
 const baseURL = 'http://localhost:4004'
 
-function Login({setLogin}) {
+function Login({setLogin, setUsername}) {
     const [loginInputs, setLoginInputs] = useState({});
     const [registerInputs, setRegisterInputs] = useState({});
 
@@ -12,6 +12,7 @@ function Login({setLogin}) {
         const name = e.target.name;
         const value = e.target.value;
         setLoginInputs(values => ({...values, [name]: value}));
+        setUsername(loginInputs.username);
     }
 
     const handleLoginSubmit = (e) => {
@@ -19,20 +20,20 @@ function Login({setLogin}) {
 
         axios.post(`${baseURL}/login`, loginInputs)
         .then(res => {
-            console.log(res);
             if (res.status === 200) {
                 setLogin(false);
             } else if (res.status === 400) {
                 alert('Incorrect username/password!');
             }
         })
-        .catch(err => console.log(err))
+        .catch(err => alert('Incorrect username/password!'))
     }
 
     const handleRegisterChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
         setRegisterInputs(values => ({...values, [name]: value}));
+        setUsername(registerInputs.username);
     }
 
     const handleRegisterSubmit = (e) => {
@@ -43,7 +44,7 @@ function Login({setLogin}) {
             if (res.status === 200) {
                 setLogin(false);
             } else if (res.status === 400) {
-                alert('Incorrect username/password!');
+                alert('Invalid username/password!');
             }
         })
         .catch(err => console.log(err));

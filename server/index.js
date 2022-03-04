@@ -11,8 +11,8 @@ app.use(cors());
 
 app.post('/login', login);
 app.post('/register', register);
-// app.post('/save', saveGame);
-// app.get('/load/:id', loadGame);
+app.post('/save', saveGame);
+app.post('/load', loadGame);
 
 app.post('/seed', seed);
 
